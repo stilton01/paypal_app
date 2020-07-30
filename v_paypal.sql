@@ -177,4 +177,5 @@ WHERE  type IN ( 'Account Hold for Open Authorization', 'Reversal of General Acc
 SELECT 'Chargebacks & disputes' AS Activity, ROUND(SUM(CASE WHEN BalanceImpact = 'Debit' THEN Gross ELSE 0 END),2) AS Debit, ROUND(SUM(CASE WHEN BalanceImpact = 'Credit' THEN Gross ELSE 0 END),2)  AS Credit, Status, Currency, ROUND(SUM(Gross),2) AS QBO_Activity, 10 AS srt
 FROM PAYPAL_TRANS
 WHERE  type IN ( 'Instant Payment Review (IPR) reversal')
- GROUP BY  Status, Currency) x;
+ GROUP BY  Status, Currency) x
+WHERE (CAST(IFNULL(x.Debit,0) AS Integer) + CAST(IFNULL(x.Credit,0) AS Integer)+ CAST(IFNULL(x.QBO_Activity,0) AS INTEGER)) != 0;
